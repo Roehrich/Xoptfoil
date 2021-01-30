@@ -1152,7 +1152,7 @@ end function lift_changed
 
 subroutine FCPMIN(cpmin, xacct, xaccb)
 !------------------------------------------------
-!     Finds last local minimum on suction side?
+!     Extracts min cp values and acceleration length
 !     Function based on xoper.f from xfoil source code
 !------------------------------------------------
 
@@ -1203,6 +1203,10 @@ subroutine FCPMIN(cpmin, xacct, xaccb)
 end subroutine FCPMIN
 
 SUBROUTINE MINCF(sept, sepb, xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt)
+!------------------------------------------------
+!     Extracts cf values
+!     Function based on xoper.f from xfoil source code
+!------------------------------------------------
 
 	use xfoil_inc
 	double precision :: CF 
