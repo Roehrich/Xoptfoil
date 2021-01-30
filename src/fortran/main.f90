@@ -62,10 +62,11 @@ program main
 !-------------------------------------------------------------------------------
   
   write(*,'(A)')
-  write(*,'(A)') 'Xoptfoil-JX  The Airfoil Optimizer                  Version '//trim(PACKAGE_VERSION)
+  write(*,'(A)') 'Xoptfoil-JX-EE  The Airfoil Optimizer             Version '//trim(PACKAGE_VERSION)
   write(*,'(A)') 
   write(*,'(A)') '         (c) 2017-2019 Daniel Prosser (original Xoptfoil)'
   write(*,'(A)') '         (c) 2019-2020 Jochen Guenzel, Matthias Boese'
+  write(*,'(A)') '         (c) 2020-2021 Enno Eyb'  
   write(*,'(A)') 
 
 ! Set default names and read command line arguments

@@ -465,7 +465,7 @@ function geo_objective_function(foil)
         cur_value = interp_point(x_interp, zt_interp, geo_targets(i)%x)
       case ('zBot')                      ! get z_value bot side
         cur_value = interp_point(x_interp, zb_interp, geo_targets(i)%x)
-      case ('Thickness')                 ! take foil camber from xfoil above
+      case ('Thickness')                 ! take foil thickness from xfoil above
         cur_value = maxt
       case ('Camber')                    ! take foil camber from xfoil above
         cur_value = maxc
@@ -508,8 +508,9 @@ function aero_objective_function(foil, actual_flap_degrees)
   double precision, dimension(:), intent(in)  :: actual_flap_degrees
   double precision                  :: aero_objective_function
 
-  double precision, dimension(noppoint) :: lift, drag, moment, alpha, xtrt, xtrb
-  logical,          dimension(noppoint) :: op_converged
+  double precision, dimension(noppoint) :: lift, drag, moment, cpmin,        &
+                                           xacct, xaccb, alpha, xtrt, xtrb
+  logical,          dimension(noppoint) :: op_converged, sept, sepb
 
   integer          :: i
   double precision :: pi
@@ -527,7 +528,9 @@ function aero_objective_function(foil, actual_flap_degrees)
                  op_mode(1:noppoint), re(1:noppoint), ma(1:noppoint),          &
                  use_flap, x_flap, y_flap, y_flap_spec,                        &
                  actual_flap_degrees(1:noppoint), xfoil_options,               &
-                 op_converged, lift, drag, moment, alpha, xtrt, xtrb, ncrit_pt)
+                 op_converged, lift, drag, moment, cpmin, xacct, xaccb,   &
+				 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
+				 xsepta, xseptb, xsepba, xsepbb)
 
   xfoil_options%show_details = show_details  
 
@@ -658,10 +661,37 @@ function aero_objective_function(foil, actual_flap_degrees)
       stop
 
     end if
-
+	
 !   Add contribution to the objective function
 
-    aero_objective_function = aero_objective_function + weighting(i)*increment
+    aero_objective_function = aero_objective_function + weighting(i)*increment	
+
+    increment = 0.d0
+
+    ! Add penalty for too low cpmin
+    increment = increment + max(0.d0,min_cpmin(i)-cpmin(i))/1.0D-01
+	! smaller denominator for larger penalty
+  
+    ! Add penalty for too short acceleration at top  
+    increment = increment + max(0.d0,min_xacct(i)-xacct(i))/1.0D-02
+	! smaller denominator for larger penalty
+	
+	! Add penalty for too short acceleration  at bot  
+    increment = increment + max(0.d0,min_xaccb(i)-xaccb(i))/1.0D-02
+	! smaller denominator for larger penalty
+	
+	! Add penalty for separation at top  
+	if (sept(i)) increment = increment + 2
+
+		
+	! Add penalty for separation at bot  
+	if (sepb(i)) increment = increment + 2
+
+	
+!   Add to the objective function
+
+    aero_objective_function = aero_objective_function + increment	
+
 
   end do
 
@@ -905,8 +935,9 @@ function write_airfoil_optimization_progress(designvars, designcounter)
 
   type(airfoil_type)       :: foil
   integer :: i
-  double precision, dimension(noppoint) :: alpha, lift, drag, moment, xtrt, xtrb
-  logical,          dimension(noppoint) :: op_converged
+  double precision, dimension(noppoint) :: alpha, lift, drag, moment, cpmin,  &
+                                           xacct, xaccb, xtrt, xtrb
+  logical,          dimension(noppoint) :: op_converged, sept, sepb
   double precision, dimension(noppoint) :: actual_flap_degrees
   double precision :: maxt, xmaxt, maxc, xmaxc
  
@@ -953,7 +984,9 @@ function write_airfoil_optimization_progress(designvars, designcounter)
                  op_mode(1:noppoint), re(1:noppoint), ma(1:noppoint),          &
                  use_flap, x_flap, y_flap, y_flap_spec,                        &
                  actual_flap_degrees(1:noppoint), xfoil_options,               &
-                 op_converged, lift, drag, moment, alpha, xtrt, xtrb, ncrit_pt)
+                 op_converged, lift, drag, moment, cpmin, xacct, xaccb,   &
+				 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
+				 xsepta, xseptb, xsepba, xsepbb)
 
 
 xfoil_options%reinitialize = xfoil_reinitialize 
@@ -1002,7 +1035,7 @@ xfoil_options%reinitialize = xfoil_reinitialize
     write(polarunit,'(A)') 'title="Airfoil polars"'
 
 !   Add current flap angle to polars to show it in visualizer
-    write(polarunit,'(A)') 'variables="alpha" "cl" "cd" "cm" "xtrt" "xtrb" "flapangle"'
+    write(polarunit,'(A)') 'variables="alpha" "cl" "cd" "cm" "xtrt" "xtrb" "flapangle" "cpmin" "xacct" "xaccb" "sept" "sepb" "E"'
     write(polarunit,'(A)') 'zone t="Seed airfoil polar"'
 
   else
@@ -1037,8 +1070,10 @@ xfoil_options%reinitialize = xfoil_reinitialize
                         ' not converged in final calculation (this should not happen...)')
     end if 
     ! Add current flap angle to polars to show it in visualizer
-    write(polarunit,'(6ES14.6, 1ES14.3)') alpha(i), lift(i), drag(i), moment(i), &
-                                 xtrt(i), xtrb(i), actual_flap_degrees (i)
+    write(polarunit,'(F7.2, F7.4, 2ES14.6, 2F7.4 , F7.2, F9.4, 2F7.4, 2L6, F7.2 )') alpha(i), lift(i), drag(i), &
+	                             moment(i), xtrt(i), xtrb(i),                 &
+								 actual_flap_degrees (i), cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), &
+								 lift(i)/drag(i)
   end do
 
 ! Close output files

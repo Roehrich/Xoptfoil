@@ -199,21 +199,29 @@ C
       CALL SPLIND(W2,W4,S,N,-999.0,-999.0)
 C
       IF(IS.EQ.1) THEN
-C
+       IF(XSTRIP(IS).GE.0.0) THEN
 C----- set approximate arc length of forced transition point for SINVRT
-       STR = SLE + (S(1)-SLE)*XSTRIP(IS)
-C
-C----- calculate actual arc length
-       CALL SINVRT(STR,XSTRIP(IS),W1,W3,S,N,SILENT_MODE)
-C
+        STR = SLE + (S(1)-SLE)*XSTRIP(IS)
+C----- calculate actual arc length using x/c if XSTRIP>0
+        CALL SINVRT(STR,XSTRIP(IS),W1,W3,S,N)
+       ELSE
+C----- set forced transition point with arclength directly if XSTRIP<0
+        STR = SST + (S(1)-SST)*(-XSTRIP(IS))
+       ENDIF
 C----- set BL coordinate value
        XIFORC = MIN( (SST - STR) , XSSI(IBLTE(IS),IS) )
 C
       ELSE
 C----- same for bottom side
 C
-       STR = SLE + (S(N)-SLE)*XSTRIP(IS)
-       CALL SINVRT(STR,XSTRIP(IS),W1,W3,S,N,SILENT_MODE)
+       IF(XSTRIP(IS).GE.0.0) THEN
+C----- set approximate arc length of forced transition point for SINVRT
+        STR = SLE + (S(N)-SLE)*XSTRIP(IS)
+        CALL SINVRT(STR,XSTRIP(IS),W1,W3,S,N)
+       ELSE
+C----- set forced transition point with arclength directly if XSTRIP<0
+        STR = SST + (S(N)-SST)*(-XSTRIP(IS))
+       ENDIF
        XIFORC = MIN( (STR - SST) , XSSI(IBLTE(IS),IS) )
 C
       ENDIF

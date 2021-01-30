@@ -1,0 +1,26 @@
+# The fortran modules provided by this target.
+provides
+ airfoil_evaluation.mod
+ airfoil_operations.mod
+ blpar_inc.mod
+ epsilonpsi.mod
+ genetic_algorithm.mod
+ input_output.mod
+ input_sanity.mod
+ math_deps.mod
+ memory_util.mod
+ my_equivalence.mod
+ naca.mod
+ nacaauxiliary.mod
+ optimization_driver.mod
+ optimization_util.mod
+ os_util.mod
+ parametrization.mod
+ particle_swarm.mod
+ polar_operations.mod
+ simplex_search.mod
+ splineprocedures.mod
+ vardef.mod
+ xbl_inc.mod
+ xfoil_driver.mod
+ xfoil_inc.mod

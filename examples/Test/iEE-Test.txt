@@ -1,0 +1,83 @@
+! Creates F3F airfoil JX-GX-15
+!    optimized for Re*sqrt(cl) = 150.000 and Re = 600.000
+!
+! GX : better performance cl = 0,1-06 compared to JX-FXevo-15
+!         (needs flap for low cl)  
+!      calculated with ncrit = 7 to reflect more turbulent conditions on the slope
+
+
+&optimization_options
+  search_type      = 'global'
+  global_search    = 'particle_swarm'
+  seed_airfoil     = 'from_file'
+  airfoil_file     = 'RG15.dat'     
+
+  shape_functions  = 'hicks-henne'
+  min_bump_width   = 0.1  
+  initial_perturb  = 0.003
+  nfunctions_top   = 5
+  nfunctions_bot   = 5
+
+  show_details     = .true. 
+  echo_input_parms = .true.  
+/  
+
+&operating_conditions
+  re_default       = 400000
+  re_default_as_resqrtcl = .false.
+  
+
+  noppoint         = 3
+
+
+  op_mode(1) = 'spec-cl'
+  op_point(1) = 0.3  
+  optimization_type(1) = 'min-drag'
+  weighting(1) = 1
+
+  op_mode(2) = 'spec-cl'
+  xtript_pt(2) = 0.2
+  xtripb_pt(2) = 0.2
+  op_point(2) = 0.5
+
+  optimization_type(2) = 'min-drag'
+  weighting(2) = 1.0
+
+  op_mode(3) = 'spec-cl'
+  op_point(3) = 0.8
+  xtript_pt(3) = -0.001
+  xtripb_pt(3) = -0.001
+  optimization_type(3) = 'min-drag'
+  weighting(3) = 1.0
+
+/
+
+&constraints
+  
+  min_cpmin(3) = -1.5
+  min_xacct(3) = 0.05
+  min_xaccb(3) = 0.05
+/  
+
+&geometry_targets
+  !ngeo_targets    = 0
+  !target_type(1)  = 'Thickness'
+  !target_geo(1)   = -1
+  !weighting_geo(1)= 2.0
+/  
+
+&initialization
+  feasible_init = .true.
+/
+
+&particle_swarm_options
+  pso_pop        = 40
+  pso_maxit      = 600
+  pso_tol        = 1D-06
+  pso_convergence_profile = 'exhaustive'
+/
+
+&xfoil_run_options
+  ncrit = 7					! default value for op points
+/
+

@@ -63,7 +63,7 @@ module vardef
   character(7), dimension(max_op_points) :: op_mode
   character(8), dimension(max_op_points) :: flap_selection
   double precision, dimension(max_op_points) :: op_point,      &
-                                 flap_degrees, weighting, scale_factor, ncrit_pt
+           flap_degrees, weighting, scale_factor, ncrit_pt, xtript_pt, xtripb_pt
   type (re_type), dimension(max_op_points)   :: re, ma
 
   double precision, dimension(max_op_points) :: target_value
@@ -89,7 +89,8 @@ module vardef
   integer :: max_curv_highlow_top, max_curv_highlow_bot
 
   character(8), dimension(max_op_points) :: moment_constraint_type
-  double precision, dimension(max_op_points) :: min_moment
+  double precision, dimension(max_op_points) :: min_moment, min_cpmin,        &
+                          min_xacct, min_xaccb, xsepta, xseptb, xsepba, xsepbb
   character(16) :: shape_functions
 
 ! Match foil mode

@@ -363,8 +363,9 @@ subroutine write_final_design(optdesign, f0, fmin, final_airfoil)
   double precision, intent(in)               :: f0, fmin
   type(airfoil_type), intent(out)            :: final_airfoil
 
-  double precision, dimension(noppoint) :: alpha, lift, drag, moment, xtrt, xtrb
-  logical,          dimension(noppoint) :: op_converged
+  double precision, dimension(noppoint) :: alpha, lift, drag, moment, cpmin, &
+                                           xacct, xaccb, xtrt, xtrb
+  logical,          dimension(noppoint) :: op_converged, sept, sepb
   double precision, dimension(noppoint) :: actual_flap_degrees
   integer :: i, iunit
   character(80) :: output_file, aero_file
@@ -391,7 +392,9 @@ subroutine write_final_design(optdesign, f0, fmin, final_airfoil)
                    op_mode(1:noppoint), re(1:noppoint), ma(1:noppoint),        &
                    use_flap, x_flap, y_flap, y_flap_spec,                      &
                    actual_flap_degrees(1:noppoint), xfoil_options,             &
-                   op_converged, lift, drag, moment, alpha, xtrt, xtrb, ncrit_pt)
+                   op_converged, lift, drag, moment, cpmin, xacct, xaccb, &
+				   sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
+				   xsepta, xseptb, xsepba, xsepbb)
 
 !   Write summary to screen and file
 
@@ -405,15 +408,18 @@ subroutine write_final_design(optdesign, f0, fmin, final_airfoil)
     write(*    ,'(A)') ""
     write(iunit,'(A)') ""
 
-! i    alpha     CL        CD       Cm    Top Xtr Bot Xtr   Re      Mach     ncrit     flap 
-! --  ------- -------- --------- -------- ------- ------- -------- -------- ------- -----------
-!  7  -1.400   0.0042   0.00513  -0.0285  0.7057  0.2705  6.00E+04   0.000     9.1    5.23 spec
-! I2    F8.3    F9.4     F10.5     F9.4    F8.4    F8.4     ES9.2     F8.3     F7.1    F6.2  
+! i  alpha   CL        CD           Cm       Top Xtr Bot Xtr  Re       Mach   ncrit   flap   cpmin   xacct  xaccb  sept  sepb    E
+! -- ----- ------ ------------- ------------- ------ ------ -------- ------- ------  ----- -------- ------ ------ ----- ----- -------
+! 1   8.31 1.0000  2.771682E-02 -2.686485E-02 0.0547 1.0000 1.00E+05   0.000    7.0      -   0.0000 0.0003 0.6023     T     T  36.08 
 
-    write (iunit,'(A)') " i   alpha     CL        CD       Cm    Top Xtr Bot Xtr   Re      Mach    ncrit     flap"
-    write (iunit,'(A)') " -- ------- -------- --------- -------- ------- ------- ------- -------- ------- -----------"
-    write (*    ,'(A)') " i   alpha     CL        CD       Cm    Top Xtr Bot Xtr   Re      Mach    ncrit     flap"
-    write (*    ,'(A)') " -- ------- -------- --------- -------- ------- ------- ------- -------- ------- -----------"
+    write (iunit,'(A)') " i  alpha   CL        CD           Cm       Top Xtr Bot Xtr  Re       &
+	      Mach   ncrit   flap   cpmin   xacct  xaccb  sept  sepb    E"
+    write (iunit,'(A)') " -- ----- ------ ------------- ------------- ------ ------ -----&
+	--- ------- ------  ----- -------- ------ ------ ----- ----- -------"
+    write (*    ,'(A)') " i  alpha   CL        CD           Cm       Top Xtr Bot Xtr  Re       &
+	      Mach   ncrit   flap   cpmin   xacct  xaccb  sept  sepb    E"
+    write (*    ,'(A)') " -- ----- ------ ------------- ------------- ------ ------ -----&
+	--- ------- ------  ----- -------- ------ ------ ----- ----- -------"
 
     do i = 1, noppoint
 
@@ -426,14 +432,14 @@ subroutine write_final_design(optdesign, f0, fmin, final_airfoil)
         end if 
       else
         flapnote = "   -"
-      end if 
+      end if   
 
-      write (iunit,  "(I2,   F8.3,   F9.4,    F10.5, F9.4,   F8.4,   F8.4, ES9.2     F8.3     F7.1, 3X, A)") &
-        i, alpha(i), lift(i), drag(i), moment(i), xtrt(i), xtrb (i), &
-        re(i)%number, ma(i)%number, ncrit_pt(i), trim(flapnote)
-      write (*    ,  "(I2,   F8.3,   F9.4,    F10.5, F9.4,   F8.4,   F8.4, ES9.2     F8.3     F7.1, 3X, A)") &
-        i, alpha(i), lift(i), drag(i), moment(i), xtrt(i), xtrb (i), &
-        re(i)%number, ma(i)%number, ncrit_pt(i), trim(flapnote)
+      write (iunit,  "(I2, F7.2, F7.4, 2ES14.6, 2F7.4, ES9.2, F8.3, F7.1, 3X, A,  F9.4, 2F7.4, 2L6, F7.2)") &
+        i, alpha(i), lift(i), drag(i), moment(i), xtrt(i), xtrb (i), re(i)%number, ma(i)%number, ncrit_pt(i), &
+		trim(flapnote), cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), lift(i)/drag(i)
+      write (*    ,  "(I2, F7.2, F7.4, 2ES14.6, 2F7.4, ES9.2, F8.3, F7.1, 3X, A,  F9.4, 2F7.4, 2L6, F7.2)") &
+        i, alpha(i), lift(i), drag(i), moment(i), xtrt(i), xtrb (i), re(i)%number, ma(i)%number, ncrit_pt(i), &
+		trim(flapnote), cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), lift(i)/drag(i)
 
     end do
 

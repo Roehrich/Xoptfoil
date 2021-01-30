@@ -21,19 +21,19 @@ if(CMAKE_SYSTEM_NAME MATCHES "UNIX")
   set (OS_FLAG "-DUNIX=1")
   # under Unix do dynamic linking so additional libs are required at runtime 
   set (STATIC_FLAG "")
-  message (STATUS "\n \n Building XFoptfoil-JX Version $ENV{XOPTFOIL_VERSION} for UNIX\n\n")
+  message (STATUS "\n \n Building XFoptfoil-JX-EE Version $ENV{XOPTFOIL_VERSION} for UNIX\n\n")
 else (CMAKE_SYSTEM_NAME MATCHES "UNIX")
   set (OS_FLAG "-DWIN32=1")
   # under Window do static linking so no additional libs are required at runtime 
   set (STATIC_FLAG "-static")
-  message (STATUS "\n \n Building XFoptfoil-JX Version $ENV{XOPTFOIL_VERSION} for Windows\n\n")
+  message (STATUS "\n \n Building XFoptfoil-JX-EE Version $ENV{XOPTFOIL_VERSION} for Windows\n\n")
 endif (CMAKE_SYSTEM_NAME MATCHES "UNIX")
 
 # that's needed to avoid strange make behaviour when installing the exe
 unset(CMAKE_SYSTEM_NAME)
 
 cmake_minimum_required(VERSION 2.8.8)
-project(Xoptfoil-JX)
+project(Xoptfoil-JX-EE)
 enable_language(Fortran)
 
 # Some default directories
@@ -97,11 +97,11 @@ set_source_files_properties(${SOURCESREAL} PROPERTIES COMPILE_FLAGS ${Fortran_RE
 add_library(MYOBJLIB OBJECT ${SOURCESDBLE} ${SOURCESREAL})
 
 # Build executables
-add_executable("xoptfoil-JX" $<TARGET_OBJECTS:MYOBJLIB> "src/fortran/main.f90")
+add_executable("xoptfoil-JX-EE" $<TARGET_OBJECTS:MYOBJLIB> "src/fortran/main.f90")
 add_executable("xfoil_worker" $<TARGET_OBJECTS:MYOBJLIB> "src/fortran/xfoil_worker.f90")
 
 # Installation
-install(TARGETS xoptfoil-JX xfoil_worker DESTINATION bin)
+install(TARGETS xoptfoil-JX-EE xfoil_worker DESTINATION bin)
 install(FILES src/python/xoptfoil_visualizer-jx.py
         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
                     GROUP_READ             GROUP_EXECUTE

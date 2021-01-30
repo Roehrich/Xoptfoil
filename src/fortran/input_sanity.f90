@@ -46,8 +46,9 @@ subroutine check_seed()
   double precision, dimension(:), allocatable :: zt_interp, zb_interp
   double precision, dimension(:), allocatable :: xt,xb,zt,zb
   double precision, dimension(naddthickconst) :: add_thickvec
-  double precision, dimension(noppoint) :: lift, drag, moment, alpha, xtrt, xtrb
-  logical,          dimension(noppoint) :: op_converged
+  double precision, dimension(noppoint) :: lift, drag, moment, cpmin, xacct, &
+                                           xaccb, alpha, xtrt, xtrb										   
+  logical,          dimension(noppoint) :: op_converged, sept, sepb
   double precision :: penaltyval, tegap, gapallow, maxthick, heightfactor
   double precision :: maxt, xmaxt, maxc, xmaxc
   double precision :: panang1, panang2, maxpanang, slope
@@ -352,7 +353,9 @@ subroutine check_seed()
                  op_mode(1:noppoint), re(1:noppoint), ma(1:noppoint),          &
                  use_flap, x_flap, y_flap, y_flap_spec,                        &
                  flap_degrees(1:noppoint), xfoil_options,                      &
-                 op_converged, lift, drag, moment, alpha, xtrt, xtrb, ncrit_pt)
+                 op_converged, lift, drag, moment, cpmin, xacct, xaccb,        &
+				 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
+				 xsepta, xseptb, xsepba, xsepbb)
 
   xfoil_options%show_details = show_details
   xfoil_options%reinitialize = xfoil_reinitialize 
@@ -448,6 +451,76 @@ subroutine check_seed()
                     "point "//trim(text)//".")
     end if
   end do
+  
+  ! Check for violation of cpmin constraint
+
+  do i = 1, noppoint
+      if (cpmin(i) < min_cpmin(i)) then
+        write(text,'(F8.4)') cpmin(i)
+        text = adjustl(text)
+        write(*,*) "CP min: "//trim(text)
+        write(text,*) i
+        text = adjustl(text)
+        call ask_stop("Seed airfoil violates min_cpmin constraint for "//&
+                      "operating point "//trim(text)//".")
+      end if
+  end do 
+
+! Check for violation of acceleration constraint top
+
+  do i = 1, noppoint
+      if (xacct(i) < min_xacct(i)) then
+        write(text,'(F8.4)') xacct(i)
+        text = adjustl(text)
+        write(*,*) "Min x acc top: "//trim(text)
+        write(text,*) i
+        text = adjustl(text)
+        call ask_stop("Seed airfoil violates min_xacct constraint for "//&
+                      "operating point "//trim(text)//".")
+      end if
+  end do 
+  
+! Check for violation of acceleration constraint bot
+
+  do i = 1, noppoint
+      if (xaccb(i) < min_xaccb(i)) then
+        write(text,'(F8.4)') xacct(i)
+        text = adjustl(text)
+        write(*,*) "Min x acc bot: "//trim(text)
+        write(text,*) i
+        text = adjustl(text)
+        call ask_stop("Seed airfoil violates min_xaccb constraint for "//&
+                      "operating point "//trim(text)//".")
+      end if
+  end do
+  
+! Check for violation of seperation constraint top
+
+  do i = 1, noppoint
+      if (sept(i)) then
+        write(text,'(L2)') sept(i)
+        text = adjustl(text)
+        write(*,*) "Separation on top: "//trim(text)
+        write(text,*) i
+        text = adjustl(text)
+        call ask_stop("Seed airfoil violates separation constraint on top for "//&
+                      "operating point "//trim(text)//".")
+      end if
+  end do  
+  
+! Check for violation of seperation constraint bot
+
+  do i = 1, noppoint
+      if (sepb(i)) then
+        write(text,'(L2)') sepb(i)
+        text = adjustl(text)
+        write(*,*) "Separation on bot: "//trim(text)
+        write(text,*) i
+        text = adjustl(text)
+        call ask_stop("Seed airfoil violates separation constraint on bot for "//&
+                      "operating point "//trim(text)//".")
+      end if
+  end do    
 
 
 ! Evaluate objectives to establish scale factors for each point

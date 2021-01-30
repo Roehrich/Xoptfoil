@@ -18,8 +18,8 @@ module polar_operations
   implicit none
 
   type op_point_type
-    double precision :: value, lift, drag, moment, alpha, xtrt, xtrb
-    logical:: converged
+    double precision :: value, lift, drag, moment, cpmin, xacct, xaccb, alpha, xtrt, xtrb
+    logical:: converged, sept, sepb
   end type op_point_type
 
   type polar_type
@@ -487,7 +487,9 @@ subroutine calculate_polar (foil, polar, xfoil_geom_options, xfoil_options)
     re, ma, use_flap, x_flap, y_flap,                                            &
     y_flap_spec, flap_degrees, xfoil_options,                                    &
     polar%op_points%converged, polar%op_points%lift, polar%op_points%drag,       &
-    polar%op_points%moment, polar%op_points%alpha, polar%op_points%xtrt, polar%op_points%xtrb)
+    polar%op_points%moment, polar%op_points%cpmin, polar%op_points%xacct,        &
+	polar%op_points%xaccb, polar%op_points%sept, polar%op_points%sepb,         &
+	polar%op_points%alpha, polar%op_points%xtrt, polar%op_points%xtrb)
 
 end subroutine calculate_polar
 

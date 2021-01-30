@@ -1,0 +1,76 @@
+In this version of Xoptfoil besides the standard functionalities of the JX version additional features are implemented:
+
+-The minimum cp value may be specified in the constraints namelist for each operation point individually (default = -100). In order to do so add the variable min_cpmin to the constraints namelist.
+Example:
+
+&constraints
+...
+  min_cpmin(2)=-1.9
+...  
+/
+
+-The x position of the first pressure increase on top and bottom side starting from stagnation point may be specified in the constraints namelist for each operation point individually (default = -1). In order to do so add the variable x_min_cp to the constraint namelist.
+Example:
+
+&constraints
+...
+  min_xacct(3)=0.2
+  min_xaccb(4)=0.1
+...
+/
+
+-The tripping location  position on both sides may be specified in the op-point namelist for each operation point individually (default = 1.0). In order to do so add the variable xtript_pt and/or xtripb_pt to the op namelist
+If present the xtript_pt and xtripb_pt will overwrite an existing xtrip definition in the xfoil_run_options for the individual operation point.
+It ist also possible to define tripping location relative to the stagnation point with negative values.
+Example:
+
+&operating_conditions
+...
+  xtript_pt(1) = 0.05
+  xtripb_pt(1) = 0.1 
+  xtript_pt(2) = -0.01
+...
+/
+
+-Separation bubbles and separations can be penalized for each operation point. In order to do so add the variables xsepta and xseptb and/or xsepba and xsepbb to the constraints namelist
+If present the  wall shear stress will be evaluated over the x interval xsepta - xseptb ("t" for "top" and x("a") < x("b")) and/or xsepba - xsepbb ("b" for "bot" and x("a") < x("b")) for the individual operation point.
+Default values vor all x... is -1.0
+Example:
+
+&constraints
+...
+  xsepta(1) = 0.9
+  xseptb(1) = 1.0
+  xsepba(2) = 0
+  xsepbb(2) = 1
+...
+/
+
+-The boundary layer parameters are altered
+
+SCCON     =  3.0	= Klag (default 5.6)	shear coefficient lag constant
+DUXCON    =  0.5	= Uxwt (default 1.0)
+GACON     =  6.8	= A    (default 6.7)	G-beta locus constants...
+GBCON     =  0.85	= B	   (default 0.75)	G = GACON * sqrt(1.0 + GBCON*beta)
+
+For documentation the other paramters are defined as:
+XSTRIP(1) =  		= Xtr/c top side
+XSTRIP(2) =  		= Xtr/c bottom side
+ACRIT     =  		= Ncrit
+TURB      =  		= % turb. level
+VACCEL    =  		= Vacc
+CTCON     =  		= KCt					Ctau weighting coefficient (implied by G-beta constants)
+CTRCON    =  		= CtiniK
+CTRCEX    =  		= CtiniX
+
+-Default for ncrit in XFOIL has been changed to n=7
+
+-the formating of outputs has been changed and the glide ratio has been added to the results
+
+
+The following source code has been modified compared to the original code (Version V1.60):
+airfoil_evaluation.f90, input_output.F90, input_sanity.f90, optimization_driver.f90, polar_opartions.f90, vardef.f90, xfoil_aero.f, xfoil_driver.f90,
+
+Multithreading has been enabled in main.def and CMakeLists.txt (due to solved problems with omp_lib - http://www.mathcancer.org/blog/setting-up-a-64-bit-gcc-environment-on-windows/)
+
+CMakeLists.txt has been adapted in order to append "-BW" to name of executable

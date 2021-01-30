@@ -766,9 +766,9 @@ subroutine airfoil_write_to_unit (iunit, title, foil, write_derivatives)
 
   do i = 1, foil%npoint
     if (write_derivatives) then
-      write(iunit,'(2F12.7,2G17.7)')  foil%x(i), foil%z(i), deriv2(i), deriv3(i)
+      write(iunit,'(2F15.10,2G17.7)')  foil%x(i), foil%z(i), deriv2(i), deriv3(i)
     else
-      write(iunit,'(2F12.7)')         foil%x(i), foil%z(i)
+      write(iunit,'(2F15.10)')         foil%x(i), foil%z(i)
     end if
   end do
 

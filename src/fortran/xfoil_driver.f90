@@ -209,8 +209,11 @@ end subroutine xfoil_apply_flap_deflection
 subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
                      re, ma, use_flap, x_flap, y_flap,                         &
                      y_flap_spec, flap_degrees, xfoil_options,                 &
-                     op_converged, lift, drag, moment, alpha, xtrt, xtrb,      &
-                     ncrit_per_point)
+                     op_converged, lift, drag, moment, cpmin, xacct,           &
+					 xaccb, sept, sepb, alpha, xtrt, xtrb, ncrit_per_point,  &
+					 xtript_per_point, xtripb_per_point, &
+		             xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt)
+					 
 
   use xfoil_inc
   use vardef,    only : airfoil_type, re_type
@@ -227,9 +230,12 @@ subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
   character(7), dimension(:), intent(in) :: op_modes
   type(xfoil_options_type), intent(in) :: xfoil_options
   double precision, dimension(size(operating_points,1)), intent(out) ::  & 
-              lift, drag, moment, alpha, xtrt, xtrb
+      lift, drag, moment, cpmin, xacct, xaccb, alpha, xtrt, xtrb
+  logical, dimension(size(operating_points,1)), intent(out) :: sept, sepb	  
   logical, dimension(:), intent(out) :: op_converged
-  double precision, dimension(:), intent(in), optional :: ncrit_per_point
+  double precision, dimension(:), intent(in), optional :: ncrit_per_point, &
+        xtript_per_point, xtripb_per_point, &
+		xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt
 
   integer :: i, noppoint
   integer :: iretry, nretry
@@ -239,6 +245,11 @@ subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
   lift(:)   = 0.d0
   drag(:)   = 0.d0
   moment(:) = 0.d0
+  cpmin(:) = 0.d0
+  xacct(:) = 0.d0
+  xaccb(:) = 0.d0
+  sept(:) = .FALSE.
+  sepb(:) = .FALSE.  
   alpha(:)  = 0.d0
   xtrt(:)   = 0.d0
   xtrb(:)   = 0.d0
@@ -353,12 +364,18 @@ subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
 
 !   Set ncrit per point
     if (present(ncrit_per_point)) ACRIT = ncrit_per_point(i)
-
+	
+!   Set xtrip per point	
+	if (present(xtript_per_point)) XSTRIP(1) = xtript_per_point(i)
+    if (present(xtripb_per_point)) XSTRIP(2) = xtripb_per_point(i)
 
 !   Now finally run xfoil at op_point
     call run_xfoil_op_point (op_modes(i), operating_points(i), xfoil_options%viscous_mode, &
                              xfoil_options%maxit, show_details, & 
-                             op_converged(i), lift(i), drag(i), moment(i), alpha(i),xtrt(i),xtrb(i))
+                             op_converged(i), lift(i), drag(i), moment(i), cpmin(i),      &
+							 xacct(i), xaccb(i), sept(i), sepb(i), alpha(i),              &
+							 xtrt(i), xtrb(i), xsepta_pt(i), xseptb_pt(i),        &
+							 xsepba_pt(i), xsepbb_pt(i))							 
 
 
 !   Handling of unconverged points
@@ -390,7 +407,10 @@ subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
       call xfoil_init_BL (show_details .and. (.not. xfoil_options%reinitialize))
       call run_xfoil_op_point (op_modes(i), newpoint, xfoil_options%viscous_mode, &
                                xfoil_options%maxit, show_details , & 
-                               op_converged(i), lift(i), drag(i), moment(i), alpha(i),xtrt(i),xtrb(i))
+                               op_converged(i), lift(i), drag(i), moment(i),      &
+							   cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i),  &
+							   alpha(i), xtrt(i), xtrb(i), xsepta_pt(i), &
+							   xseptb_pt(i), xsepba_pt(i), xsepbb_pt(i))
 
 !     Now try to run again at the old operating point increasing RE a little ...
 
@@ -404,7 +424,10 @@ subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
 
         call run_xfoil_op_point (op_modes(i), operating_points(i), xfoil_options%viscous_mode, &
                                  xfoil_options%maxit, show_details, & 
-                                 op_converged(i), lift(i), drag(i), moment(i),alpha(i),xtrt(i),xtrb(i))
+                                 op_converged(i), lift(i), drag(i), moment(i),    &
+								 cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), alpha(i),   &
+								 xtrt(i), xtrb(i), xsepta_pt(i), xseptb_pt(i), &
+								 xsepba_pt(i), xsepbb_pt(i))
                               
         if (.not. op_converged(i)    & 
             .or. (is_out_lier (drag_statistics(i), drag(i)))  &
@@ -478,7 +501,10 @@ end subroutine run_xfoil
 
 subroutine run_xfoil_op_point (op_mode, op_point, viscous_mode,       &
                                maxit, show_details,                   &
-                               converged, lift, drag, moment, alpha, xtrt, xtrb)
+                               converged, lift, drag, moment, cpmin, &
+							   xacct, xaccb, sept, sepb, alpha, xtrt, xtrb, &
+							   xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt)
+							   							   
 
   use xfoil_inc
   use os_util, only: print_colored, COLOR_WARNING, COLOR_NORMAL
@@ -488,8 +514,10 @@ subroutine run_xfoil_op_point (op_mode, op_point, viscous_mode,       &
   double precision, intent(in)  :: op_point
   logical, intent(in)           :: viscous_mode, show_details
   integer, intent(in)           :: maxit
-  logical, intent(out)          :: converged
-  double precision, intent(out) :: lift, drag, moment, alpha, xtrt, xtrb
+  logical, intent(out)          :: converged, sept, sepb
+  double precision, intent(out) :: lift, drag, moment, cpmin, xacct,       &
+                                   xaccb, alpha, xtrt, xtrb
+  double precision, intent(in) :: xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt
 
   integer       :: niter_needed  
   character(20) :: outstring 
@@ -541,6 +569,10 @@ subroutine run_xfoil_op_point (op_mode, op_point, viscous_mode,       &
 
   lift = CL
   moment = CM
+  
+  call FCPMIN(cpmin, xacct, xaccb)
+  call MINCF(sept, sepb, xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt)
+  
   alpha = ALFA/DTOR
   if (viscous_mode) then
     drag = CD
@@ -1117,6 +1149,124 @@ function lift_changed (op_mode, op_point, lift)
 
 end function lift_changed
 !------------------------------------------------------------------------------
+
+subroutine FCPMIN(cpmin, xacct, xaccb)
+!------------------------------------------------
+!     Finds last local minimum on suction side?
+!     Function based on xoper.f from xfoil source code
+!------------------------------------------------
+
+  use xfoil_inc
+  double precision, intent(out) :: cpmin, xacct, xaccb
+  integer :: I, J_acc, iunit
+  
+  cpmin = CPV(1)
+
+  DO I = 2, N
+	IF (CPV(I) .LT. cpmin) THEN
+		cpmin = CPV(I)
+	END IF
+  ENDDO
+    
+  !SST         S value at stagnation point
+  !IST         stagnation point lies between S(IST), S(IST+1)
+  
+  J_acc = IST
+  DO WHILE (CPV(J_acc - 1) .LT. CPV(J_acc))
+	J_acc = J_acc - 1
+  ENDDO
+  xacct = X(J_acc)
+  
+  J_acc = IST + 1.d0  
+  DO WHILE (CPV(J_acc + 1) .LT. CPV(J_acc))
+	J_acc = J_acc + 1
+  ENDDO
+  xaccb = X(J_acc)
+  
+  !!Write CP to file together with results
+  !open  (unit=iunit, file='CP.txt')
+  !write(iunit,'(A)') '    X       Y       CPI       CPV'
+  !DO I = 1, N + NW      
+  !  write(iunit,'(4F14.6)') X(I), Y(I), CPI(I), CPV(I)
+  !	if (I == IST) write(iunit,'(A)') ' *******Stagnation Point ******* '
+  !ENDDO 
+  
+  !write(iunit,'(A)') ' ************** ' 
+  !write(iunit,'(A, F14.6)') 'cpmin =', cpmin
+  !write(iunit,'(A)') ' ************** '  
+  !write(iunit,'(A, F14.6)') 'xacct =', xacct
+  !write(iunit,'(A, F14.6)') 'xaccb =', xaccb
+  !write(iunit,'(A)') ' ************** '
+  !close (iunit)  
+
+  RETURN
+end subroutine FCPMIN
+
+SUBROUTINE MINCF(sept, sepb, xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt)
+
+	use xfoil_inc
+	double precision :: CF 
+	double precision, intent(in) :: xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt
+	integer :: I, IS, IBL, iunit
+	logical, intent(out) :: sept, sepb
+	
+
+    
+	sept = .FALSE.
+	sepb = .FALSE.
+	
+	!!Write CF to file together with results
+	!open  (unit=iunit, file='CF.txt')
+	!write(iunit,'(A)') '    X       Y       CF'
+  
+    !! This is the Original stripped down from XFOIL 
+    !DO I=1, N
+    !  IS = 1
+    !  IF(GAM(I) .LT. 0.0) IS = 2
+    !
+    !  IF(LIPAN .AND. LVISC) THEN
+    !    IF(IS.EQ.1) THEN
+    !      IBL = IBLTE(IS) - I + 1
+    !    ELSE
+    !      IBL = IBLTE(IS) + I - N
+    !    ENDIF
+    !    CF =  TAU(IBL,IS)/(0.5*QINF**2)
+    !  ELSE
+    !    CF = 0.
+    !  ENDIF
+    !
+    !  write(iunit,'(3F14.6)') X(I), Y(I), CF
+    !ENDDO		
+	
+
+	DO I=1, N
+	    IF(GAM(I) .GE. 0.0) THEN
+			IS = 1
+			IF ((X(I) .GE. xsepta_pt) .AND. (X(I) .LE. xseptb_pt) .AND. .NOT. sept) THEN
+					IBL = IBLTE(IS) - I + 1
+					CF =  TAU(IBL,IS)/(0.5*QINF**2)
+					IF (CF .LE. 0.d0) THEN
+						sept = .TRUE.
+					END IF	
+                    !write(iunit,'(3F14.6)') X(I), Y(I), CF					
+			END IF
+		ELSE 
+			IS = 2
+			IF ((X(I) .GE. xsepba_pt) .AND. (X(I) .LE. xsepbb_pt) .AND. .NOT. sepb) THEN
+					IBL = IBLTE(IS) + I - N
+					CF =  TAU(IBL,IS)/(0.5*QINF**2)
+					IF (CF .LE. 0.d0) THEN
+						sepb = .TRUE.
+					END IF
+                    !write(iunit,'(3F14.6)') X(I), Y(I), CF					
+			END IF
+		END IF
+	ENDDO			
+	
+    !close (iunit)
+
+	RETURN
+END ! MINCF
 
 end module xfoil_driver
 
