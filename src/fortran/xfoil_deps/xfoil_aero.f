@@ -22,17 +22,29 @@ C===================================================================70
       SUBROUTINE BLPINI
 
       use blpar_inc
-C     
-      SCCON = 5.6
+C	  
+C     BW
+C  
+C     SCCON = 3.0
+C     GACON = 6.80
+C     GBCON = 0.85
+C	  
+C     DEFAULT
+C
+      SCCON = 5.6   
       GACON = 6.70
-      GBCON = 0.75
+      GBCON = 0.75 
+C
+C     GENERAL	  
+C	  
       GCCON = 18.0
       DLCON =  0.9
 C
       CTRCON = 1.8
       CTRCEX = 3.3
 C
-      DUXCON = 1.0
+C     DUXCON = 1.0  
+      DUXCON = 0.5
 C
       CTCON = 0.5/(GACON**2 * GBCON)
 C
