@@ -46,7 +46,7 @@ Example:
 ...
 /
 
--The boundary layer parameters are altered
+-The boundary layer parameters are NOT altered!!!
 
 SCCON     =  3.0	= Klag (default 5.6)	shear coefficient lag constant
 DUXCON    =  0.5	= Uxwt (default 1.0)
