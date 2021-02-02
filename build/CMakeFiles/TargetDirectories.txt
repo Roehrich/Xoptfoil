@@ -1,9 +1,0 @@
-E:/Github/XoptfoilJX-EE/build/CMakeFiles/MYOBJLIB.dir
-E:/Github/XoptfoilJX-EE/build/CMakeFiles/install/local.dir
-E:/Github/XoptfoilJX-EE/build/CMakeFiles/install.dir
-E:/Github/XoptfoilJX-EE/build/CMakeFiles/edit_cache.dir
-E:/Github/XoptfoilJX-EE/build/CMakeFiles/xoptfoil-JX-EE.dir
-E:/Github/XoptfoilJX-EE/build/CMakeFiles/xfoil_worker.dir
-E:/Github/XoptfoilJX-EE/build/CMakeFiles/rebuild_cache.dir
-E:/Github/XoptfoilJX-EE/build/CMakeFiles/list_install_components.dir
-E:/Github/XoptfoilJX-EE/build/CMakeFiles/install/strip.dir

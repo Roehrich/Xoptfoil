@@ -1,3 +1,0 @@
-E:/Github/XoptfoilJX-EE/windows/bin/xoptfoil-JX-EE.exe
-E:/Github/XoptfoilJX-EE/windows/bin/xfoil_worker.exe
-E:/Github/XoptfoilJX-EE/windows/bin/xoptfoil_visualizer-jx.py
