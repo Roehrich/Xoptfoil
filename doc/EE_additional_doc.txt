@@ -19,7 +19,7 @@ Example:
 ...
 /
 
--The tripping location  position on both sides may be specified in the op-point namelist for each operation point individually (default = 1.0). In order to do so add the variable xtript_pt and/or xtripb_pt to the op namelist
+-The tripping location on both sides may be specified in the op-point namelist for each operation point individually (default = 1.0). In order to do so add the variable xtript_pt and/or xtripb_pt to the op namelist
 If present the xtript_pt and xtripb_pt will overwrite an existing xtrip definition in the xfoil_run_options for the individual operation point.
 It ist also possible to define tripping location relative to the stagnation point with negative values.
 Example:
@@ -65,7 +65,7 @@ CTRCEX    =  		= CtiniX
 
 -Default for ncrit in XFOIL has been changed to n=7
 
--the formating of outputs has been changed and the glide ratio has been added to the results
+-the formating of outputs has been changed and the glide ratio, separation flag, cpmin and acceleration lenghts have been added to the results
 
 
 The following source code has been modified compared to the original code (Version V1.60):
@@ -73,4 +73,4 @@ airfoil_evaluation.f90, input_output.F90, input_sanity.f90, optimization_driver.
 
 Multithreading has been enabled in main.def and CMakeLists.txt (due to solved problems with omp_lib - http://www.mathcancer.org/blog/setting-up-a-64-bit-gcc-environment-on-windows/)
 
-CMakeLists.txt has been adapted in order to append "-BW" to name of executable
+CMakeLists.txt has been adapted in order to append "-EE" to name of executable
