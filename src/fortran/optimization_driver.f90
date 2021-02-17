@@ -412,13 +412,13 @@ subroutine write_final_design(optdesign, f0, fmin, final_airfoil)
 ! -- ----- ------ ------------- ------------- ------ ------ -------- ------- ------  ----- -------- ------ ------ ----- ----- -------
 ! 1   8.31 1.0000  2.771682E-02 -2.686485E-02 0.0547 1.0000 1.00E+05   0.000    7.0      -   0.0000 0.0003 0.6023     T     T  36.08 
 
-    write (iunit,'(A)') " i  alpha   CL        CD           Cm       Top Xtr Bot Xtr  Re       &
+    write (iunit,'(A)') " i  alpha    CL        CD           Cm       Top Xtr Bot Xtr  Re       &
 	      Mach   ncrit   flap   cpmin   xacct  xaccb  sept  sepb    E"
-    write (iunit,'(A)') " -- ----- ------ ------------- ------------- ------ ------ -----&
+    write (iunit,'(A)') " -- ----- ------- ------------- ------------- ------ ------ -----&
 	--- ------- ------  ----- -------- ------ ------ ----- ----- -------"
-    write (*    ,'(A)') " i  alpha   CL        CD           Cm       Top Xtr Bot Xtr  Re       &
+    write (*    ,'(A)') " i  alpha    CL        CD           Cm       Top Xtr Bot Xtr  Re       &
 	      Mach   ncrit   flap   cpmin   xacct  xaccb  sept  sepb    E"
-    write (*    ,'(A)') " -- ----- ------ ------------- ------------- ------ ------ -----&
+    write (*    ,'(A)') " -- ----- ------- ------------- ------------- ------ ------ -----&
 	--- ------- ------  ----- -------- ------ ------ ----- ----- -------"
 
     do i = 1, noppoint
@@ -434,10 +434,10 @@ subroutine write_final_design(optdesign, f0, fmin, final_airfoil)
         flapnote = "   -"
       end if   
 
-      write (iunit,  "(I2, F7.2, F7.4, 2ES14.6, 2F7.4, ES9.2, F8.3, F7.1, 3X, A,  F9.4, 2F7.4, 2L6, F7.2)") &
+      write (iunit,  "(I2, F7.2, F8.4, 2ES14.6, 2F7.4, ES9.2, F8.3, F7.1, 3X, A,  F9.4, 2F7.4, 2L6, F7.2)") &
         i, alpha(i), lift(i), drag(i), moment(i), xtrt(i), xtrb (i), re(i)%number, ma(i)%number, ncrit_pt(i), &
 		trim(flapnote), cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), lift(i)/drag(i)
-      write (*    ,  "(I2, F7.2, F7.4, 2ES14.6, 2F7.4, ES9.2, F8.3, F7.1, 3X, A,  F9.4, 2F7.4, 2L6, F7.2)") &
+      write (*    ,  "(I2, F7.2, F8.4, 2ES14.6, 2F7.4, ES9.2, F8.3, F7.1, 3X, A,  F9.4, 2F7.4, 2L6, F7.2)") &
         i, alpha(i), lift(i), drag(i), moment(i), xtrt(i), xtrb (i), re(i)%number, ma(i)%number, ncrit_pt(i), &
 		trim(flapnote), cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), lift(i)/drag(i)
 

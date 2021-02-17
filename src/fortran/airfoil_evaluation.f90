@@ -1070,7 +1070,7 @@ xfoil_options%reinitialize = xfoil_reinitialize
                         ' not converged in final calculation (this should not happen...)')
     end if 
     ! Add current flap angle to polars to show it in visualizer
-    write(polarunit,'(F7.2, F7.4, 2ES14.6, 2F7.4 , F7.2, F9.4, 2F7.4, 2L6, F7.2 )') alpha(i), lift(i), drag(i), &
+    write(polarunit,'(F7.2, F8.4, 2ES14.6, 2F7.4 , F7.2, F9.4, 2F7.4, 2L6, F7.2 )') alpha(i), lift(i), drag(i), &
 	                             moment(i), xtrt(i), xtrb(i),                 &
 								 actual_flap_degrees (i), cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), &
 								 lift(i)/drag(i)
