@@ -47,7 +47,7 @@ subroutine check_seed()
   double precision, dimension(:), allocatable :: xt,xb,zt,zb
   double precision, dimension(naddthickconst) :: add_thickvec
   double precision, dimension(noppoint) :: lift, drag, moment, cpmin, xacct, &
-                                           xaccb, alpha, xtrt, xtrb										   
+                                           xaccb, alpha, xtrt, xtrb             
   logical,          dimension(noppoint) :: op_converged, sept, sepb
   double precision :: penaltyval, tegap, gapallow, maxthick, heightfactor
   double precision :: maxt, xmaxt, maxc, xmaxc
@@ -354,8 +354,8 @@ subroutine check_seed()
                  use_flap, x_flap, y_flap, y_flap_spec,                        &
                  flap_degrees(1:noppoint), xfoil_options,                      &
                  op_converged, lift, drag, moment, cpmin, xacct, xaccb,        &
-				 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
-				 xsepta, xseptb, xsepba, xsepbb)
+                 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
+                 xsepta, xseptb, xsepba, xsepbb)
 
   xfoil_options%show_details = show_details
   xfoil_options%reinitialize = xfoil_reinitialize 

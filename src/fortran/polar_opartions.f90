@@ -117,11 +117,11 @@ subroutine generate_polar_files (output_prefix, foil, npolars, polars, &
 
   do i = 1, npolars
 
-    write (*,'(1x,A,I1,A, I7,A)') 'Calculating polar Type ',polars(i)%re%type,' Re=',  &
+    write (*,'(1x,A,I1,A, I8,A)') 'Calculating polar Type ',polars(i)%re%type,' Re=',  &
           int(polars(i)%re%number), ' for '// trim(polars(i)%airfoil_name)
     write (*,*) 
     call init_polar (polars(i))
-
+ 
     call calculate_polar (foil, polars(i), xfoil_geom_options, xfoil_options)
 
     write (*,*) 
@@ -464,7 +464,8 @@ subroutine calculate_polar (foil, polar, xfoil_geom_options, xfoil_options)
 
   character(7),     dimension(polar%n_op_points) :: op_modes
   type(re_type)   , dimension(polar%n_op_points) :: ma, re
-  double precision, dimension(polar%n_op_points) :: flap_degrees
+  double precision, dimension(polar%n_op_points) :: flap_degrees, &
+                            xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt
   double precision :: x_flap, y_flap
   character(3) :: y_flap_spec
   logical :: use_flap
@@ -479,6 +480,10 @@ subroutine calculate_polar (foil, polar, xfoil_geom_options, xfoil_options)
   x_flap           = 0.d0
   y_flap           = 0.d0
   y_flap_spec      = 'y/c'
+  xsepta_pt (:)    = -1.d0
+  xseptb_pt (:)    = -1.d0
+  xsepba_pt (:)    = -1.d0
+  xsepbb_pt (:)    = -1.d0
 
   ! reset out lier detection tect. for a new polar 
   call xfoil_driver_reset
@@ -488,8 +493,9 @@ subroutine calculate_polar (foil, polar, xfoil_geom_options, xfoil_options)
     y_flap_spec, flap_degrees, xfoil_options,                                    &
     polar%op_points%converged, polar%op_points%lift, polar%op_points%drag,       &
     polar%op_points%moment, polar%op_points%cpmin, polar%op_points%xacct,        &
-	polar%op_points%xaccb, polar%op_points%sept, polar%op_points%sepb,         &
-	polar%op_points%alpha, polar%op_points%xtrt, polar%op_points%xtrb)
+    polar%op_points%xaccb, polar%op_points%sept, polar%op_points%sepb,         &
+    polar%op_points%alpha, polar%op_points%xtrt, polar%op_points%xtrb,         &
+    xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt)
 
 end subroutine calculate_polar
 
@@ -565,7 +571,7 @@ subroutine write_polar_header (out_unit, polar)
   end if 
   write (out_unit,*) 
   write (out_unit,'(A)') " xtrf =   1.000 (top)        1.000 (bottom)"
-  write (out_unit,'(A,F7.3,5X,A,F9.3,A,5X,A,F7.3 )')                     &
+  write (out_unit,'(A,F7.2,5X,A,F9.3,A,5X,A,F7.3 )')                     &
                      " Mach = ",polar%ma%number,'Re = ',(polar%re%number/1.d6),' e 6','Ncrit = ',polar%ncrit
   write (out_unit,*)
   
@@ -608,7 +614,7 @@ function  get_n_op_points (polar)
     end if 
 
     build_filename  = trim(build_filename)  // '_Re'
-    write (temp_String, '(F5.3)') polar%re%number / 1.d6
+    write (temp_String, '(F5.2)') polar%re%number / 1.d6
     build_filename  = trim(build_filename)  // trim(temp_String)
 
     build_filename  = trim(build_filename)  // '_M'

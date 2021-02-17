@@ -110,8 +110,8 @@ subroutine read_inputs(input_file, search_type, global_search, local_search,   &
             flap_degrees, weighting, optimization_type, ncrit_pt, xtript_pt, xtripb_pt
   namelist /constraints/ min_thickness, max_thickness, moment_constraint_type, &
                          min_moment, min_cpmin, min_xacct, min_xaccb,          &
-						 xsepta, xseptb, xsepba, xsepbb,                       &
-						 min_te_angle, check_curvature, auto_curvature,        &
+                         xsepta, xseptb, xsepba, xsepbb,                       &
+                         min_te_angle, check_curvature, auto_curvature,        &
                          max_curv_reverse_top, max_curv_reverse_bot,           &
                          max_curv_highlow_top, max_curv_highlow_bot,           &
                          curv_threshold, symmetrical, min_flap_degrees,        &
@@ -689,7 +689,7 @@ subroutine read_inputs(input_file, search_type, global_search, local_search,   &
 
   do i = 1, noppoint
     if (xtript_pt(i) == 1.d0) xtript_pt(i) = xtript
-	if (xtripb_pt(i) == 1.d0) xtripb_pt(i) = xtripb
+    if (xtripb_pt(i) == 1.d0) xtripb_pt(i) = xtripb
   end do  
 
 ! Option to match seed airfoil to another instead of aerodynamic optimization
@@ -770,21 +770,21 @@ subroutine read_inputs(input_file, search_type, global_search, local_search,   &
     if (xtript_pt(i) /= 1.d0)                                                  &
       write(*,*) " xtript_pt("//trim(text)//") = ", xtript_pt(i)
     if (xtripb_pt(i) /= 1.d0)                                                  &
-      write(*,*) " xtripb_pt("//trim(text)//") = ", xtripb_pt(i)	  
-	if (min_cpmin(i) /= -100.d0)                                                  &
+      write(*,*) " xtripb_pt("//trim(text)//") = ", xtripb_pt(i)   
+    if (min_cpmin(i) /= -100.d0)                                                  &
       write(*,*) " min_cpmin("//trim(text)//") = ", min_cpmin(i)
-	if (min_xacct(i) /= -1.d0)                                                  &
+    if (min_xacct(i) /= -1.d0)                                                  &
       write(*,*) " min_xacct("//trim(text)//") = ", min_xacct(i)
-	if (min_xaccb(i) /= -1.d0)                                                  &
+    if (min_xaccb(i) /= -1.d0)                                                  &
       write(*,*) " min_xaccb("//trim(text)//") = ", min_xaccb(i)  
-	if (xsepta(i) /= -1.d0)                                                  &
-      write(*,*) " xsepta("//trim(text)//") = ", xsepta(i)	
-	if (xseptb(i) /= -1.d0)                                                  &
+    if (xsepta(i) /= -1.d0)                                                  &
+      write(*,*) " xsepta("//trim(text)//") = ", xsepta(i) 
+    if (xseptb(i) /= -1.d0)                                                  &
       write(*,*) " xseptb("//trim(text)//") = ", xseptb(i)
-	if (xsepba(i) /= -1.d0)                                                  &
+    if (xsepba(i) /= -1.d0)                                                  &
       write(*,*) " xsepba("//trim(text)//") = ", xsepba(i)
-	if (xsepbb(i) /= -1.d0)                                                  &
-      write(*,*) " xsepbb("//trim(text)//") = ", xsepbb(i)	  
+    if (xsepbb(i) /= -1.d0)                                                  &
+      write(*,*) " xsepbb("//trim(text)//") = ", xsepbb(i)   
     if (i < noppoint) write(*,*)
   end do
   write(*,'(A)') " /"
@@ -1054,36 +1054,36 @@ subroutine read_inputs(input_file, search_type, global_search, local_search,   &
       call my_stop("at least two, better three operating points are required"//&
                    " for to minimize lift curve slope.")
     if (ncrit_pt(i) <= 0.d0) call my_stop("ncrit_pt must be > 0 or -1.")
-	if (xtript_pt(i) < -1.d0 .or. xtript_pt(i) > 1.d0)                                &
+    if (xtript_pt(i) < -1.d0 .or. xtript_pt(i) > 1.d0)                                &
       call my_stop("xtript_pt and xtript must be >= -1. and <= 1.")
     if (xtripb_pt(i) < -1.d0 .or. xtripb_pt(i) > 1.d0)                                &
-      call my_stop("xtripb_pt and xtripb must be >= -1. and <= 1.")	  
-	if (min_cpmin(i) > 1.d0) call my_stop("min_cpmin must be < 1")
-	if (min_xacct(i) /= -1.d0 .and.                                           &
-	                     (min_xacct(i) < 0.d0 .or. min_xacct(i) > 1.d0))      &
+      call my_stop("xtripb_pt and xtripb must be >= -1. and <= 1.")   
+    if (min_cpmin(i) > 1.d0) call my_stop("min_cpmin must be < 1")
+    if (min_xacct(i) /= -1.d0 .and.                                           &
+                      (min_xacct(i) < 0.d0 .or. min_xacct(i) > 1.d0))      &
                          call my_stop("min_xacct must be -1 or between 0 and 1")
-	if (min_xaccb(i) /= -1.d0 .and.                                           &
-	                     (min_xaccb(i) < 0.d0 .or. min_xaccb(i) > 1.d0))      &
+    if (min_xaccb(i) /= -1.d0 .and.                                           &
+                      (min_xaccb(i) < 0.d0 .or. min_xaccb(i) > 1.d0))      &
                          call my_stop("min_xaccb must be -1 or between 0 and 1")
-	if (xsepta(i) /= -1.d0 .and.                                           &
-	                     (xsepta(i) < 0.d0 .or. xsepta(i) > 1.d0))      &
-                         call my_stop("xsepta must be -1 or between 0 and 1")	
-	if (xseptb(i) /= -1.d0 .and.                                           &
-	                     (xseptb(i) < 0.d0 .or. xseptb(i) > 1.d0))      &
+    if (xsepta(i) /= -1.d0 .and.                                           &
+                      (xsepta(i) < 0.d0 .or. xsepta(i) > 1.d0))      &
+                         call my_stop("xsepta must be -1 or between 0 and 1") 
+    if (xseptb(i) /= -1.d0 .and.                                           &
+                      (xseptb(i) < 0.d0 .or. xseptb(i) > 1.d0))      &
                          call my_stop("xseptb must be -1 or between 0 and 1")
-	if (xsepba(i) /= -1.d0 .and.                                           &
-	                     (xsepba(i) < 0.d0 .or. xsepba(i) > 1.d0))      &
+    if (xsepba(i) /= -1.d0 .and.                                           &
+                      (xsepba(i) < 0.d0 .or. xsepba(i) > 1.d0))      &
                          call my_stop("xsepba must be -1 or between 0 and 1")
-	if (xsepbb(i) /= -1.d0 .and.                                           &
-	                     (xsepbb(i) < 0.d0 .or. xsepbb(i) > 1.d0))      &
+    if (xsepbb(i) /= -1.d0 .and.                                           &
+                      (xsepbb(i) < 0.d0 .or. xsepbb(i) > 1.d0))      &
                          call my_stop("xsepbb must be -1 or between 0 and 1")
-	if ((xsepta(i) /= -1.d0 .or. xseptb(i) /= -1.d0) .and.                       &
-	                     (xsepta(i) > xseptb(i)))      &
-                         call my_stop("xsepta must be smaller or equal to xseptb")	
-	if ((xsepba(i) /= -1.d0 .or. xsepbb(i) /= -1.d0) .and.                          &
-	                     (xsepba(i) > xsepbb(i)))      &
-                         call my_stop("xsepba must be smaller or equal to xsepbb")						 
-	
+    if ((xsepta(i) /= -1.d0 .or. xseptb(i) /= -1.d0) .and.                       &
+                      (xsepta(i) > xseptb(i)))      &
+                         call my_stop("xsepta must be smaller or equal to xseptb") 
+    if ((xsepba(i) /= -1.d0 .or. xsepbb(i) /= -1.d0) .and.                          &
+                      (xsepba(i) > xsepbb(i)))      &
+                         call my_stop("xsepba must be smaller or equal to xsepbb")       
+ 
   end do
 
 ! jx-mod Aero targets - Check for an existing target value 

@@ -529,8 +529,8 @@ function aero_objective_function(foil, actual_flap_degrees)
                  use_flap, x_flap, y_flap, y_flap_spec,                        &
                  actual_flap_degrees(1:noppoint), xfoil_options,               &
                  op_converged, lift, drag, moment, cpmin, xacct, xaccb,   &
-				 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
-				 xsepta, xseptb, xsepba, xsepbb)
+                 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
+                 xsepta, xseptb, xsepba, xsepbb)
 
   xfoil_options%show_details = show_details  
 
@@ -661,36 +661,36 @@ function aero_objective_function(foil, actual_flap_degrees)
       stop
 
     end if
-	
+ 
 !   Add contribution to the objective function
 
-    aero_objective_function = aero_objective_function + weighting(i)*increment	
+    aero_objective_function = aero_objective_function + weighting(i)*increment 
 
     increment = 0.d0
 
     ! Add penalty for too low cpmin
     increment = increment + max(0.d0,min_cpmin(i)-cpmin(i))/1.0D-01
-	! smaller denominator for larger penalty
+    ! smaller denominator for larger penalty
   
     ! Add penalty for too short acceleration at top  
     increment = increment + max(0.d0,min_xacct(i)-xacct(i))/1.0D-02
-	! smaller denominator for larger penalty
-	
-	! Add penalty for too short acceleration  at bot  
+    ! smaller denominator for larger penalty
+ 
+    ! Add penalty for too short acceleration  at bot  
     increment = increment + max(0.d0,min_xaccb(i)-xaccb(i))/1.0D-02
-	! smaller denominator for larger penalty
-	
-	! Add penalty for separation at top  
-	if (sept(i)) increment = increment + 2
+    ! smaller denominator for larger penalty
+ 
+    ! Add penalty for separation at top  
+    if (sept(i)) increment = increment + 2
 
-		
-	! Add penalty for separation at bot  
-	if (sepb(i)) increment = increment + 2
+  
+    ! Add penalty for separation at bot  
+    if (sepb(i)) increment = increment + 2
 
-	
-!   Add to the objective function
+ 
+    ! Add to the objective function
 
-    aero_objective_function = aero_objective_function + increment	
+    aero_objective_function = aero_objective_function + increment 
 
 
   end do
@@ -985,8 +985,8 @@ function write_airfoil_optimization_progress(designvars, designcounter)
                  use_flap, x_flap, y_flap, y_flap_spec,                        &
                  actual_flap_degrees(1:noppoint), xfoil_options,               &
                  op_converged, lift, drag, moment, cpmin, xacct, xaccb,   &
-				 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
-				 xsepta, xseptb, xsepba, xsepbb)
+                 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
+                 xsepta, xseptb, xsepba, xsepbb)
 
 
 xfoil_options%reinitialize = xfoil_reinitialize 
@@ -1071,9 +1071,8 @@ xfoil_options%reinitialize = xfoil_reinitialize
     end if 
     ! Add current flap angle to polars to show it in visualizer
     write(polarunit,'(F7.2, F8.4, 2ES14.6, 2F7.4 , F7.2, F9.4, 2F7.4, 2L6, F7.2 )') alpha(i), lift(i), drag(i), &
-	                             moment(i), xtrt(i), xtrb(i),                 &
-								 actual_flap_degrees (i), cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), &
-								 lift(i)/drag(i)
+          moment(i), xtrt(i), xtrb(i), actual_flap_degrees (i), cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), &
+          lift(i)/drag(i)
   end do
 
 ! Close output files
