@@ -65,6 +65,8 @@ CTRCEX    =  		= CtiniX
 
 -Default for ncrit in XFOIL has been changed to n=7
 
+-number of operation points increased to 100
+
 -the formating of outputs has been changed and the glide ratio, separation flag, cpmin and acceleration lenghts have been added to the results
 
 

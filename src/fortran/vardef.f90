@@ -59,7 +59,7 @@ module vardef
   integer :: npan_fixed = 0          ! set a fixed number of panels which can't be changed
 
   integer :: noppoint
-  integer, parameter :: max_op_points = 30
+  integer, parameter :: max_op_points = 100
   character(7), dimension(max_op_points) :: op_mode
   character(8), dimension(max_op_points) :: flap_selection
   double precision, dimension(max_op_points) :: op_point,      &

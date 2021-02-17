@@ -185,7 +185,7 @@ subroutine read_polar_inputs  (input_file, foil_name, npolars, polars, xfoil_opt
 
   ! Init default values for xfoil options
 
-  ncrit           = 9.d0
+  ncrit           = 7.d0
   xtript          = 1.d0
   xtripb          = 1.d0
   viscous_mode    = .true.
