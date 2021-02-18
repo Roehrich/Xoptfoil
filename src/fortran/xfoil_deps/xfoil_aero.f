@@ -22,21 +22,21 @@ C===================================================================70
       SUBROUTINE BLPINI
 
       use blpar_inc
-C	  
+C    
 C     BW
 C  
-C     SCCON = 3.0
-C     GACON = 6.80
-C     GBCON = 0.85
-C	  
+      SCCON = 3.0
+      GACON = 6.80
+      GBCON = 0.85
+C   
 C     DEFAULT
 C
-      SCCON = 5.6   
-      GACON = 6.70
-      GBCON = 0.75 
+C     SCCON = 5.6   
+C     GACON = 6.70
+C     GBCON = 0.75 
 C
-C     GENERAL	  
-C	  
+C     GENERAL   
+C   
       GCCON = 18.0
       DLCON =  0.9
 C
@@ -1410,7 +1410,6 @@ C
       NITER = NITER1
 C     jx-mod: will be number of iterations needed
       ITER  = 0 
-
 C     DP mod: variable to notify of infinite loop condition (and halt)
       XFOIL_FAIL = .FALSE.
 C
@@ -1487,9 +1486,12 @@ C     DP mod: added SILENT_MODE option
         WRITE(*,*) 'Solving BL system ...'
       END IF
       DO 1000 ITER=1, NITER
+	    write(*    ,'(A, I3, I3)') " Looking in XFOIL", ITER, NITER
 C
 C------ fill Newton system for BL variables
+        write(*    ,'(A)') " Still here in aero..."
         CALL SETBL
+		write(*    ,'(A)') " Not anymore in aero..."
 C       DP mod: check for infinite loop condition
         IF (XFOIL_FAIL) THEN
           CL = -0.1
@@ -1546,7 +1548,7 @@ C
          GO TO 90
         ENDIF
 C
- 1000 CONTINUE
+ 1000 CONTINUE 
 C     DP mod: added SILENT_MODE option
       IF(.NOT. SILENT_MODE) WRITE(*,*) 'VISCAL:  Convergence failed'
 C

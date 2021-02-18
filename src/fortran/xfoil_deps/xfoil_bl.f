@@ -254,6 +254,8 @@ C
       DW2 = DSWAKI
 C
       U2 = UEI*(1.0-TKBL) / (1.0 - TKBL*(UEI/QINFBL)**2)
+	  write(*,*) "BLPRV UEI: ", UEI," TKBL: ", TKBL, " QINFBL: " ,
+     & QINFBL, " ==> U2: ", U2
       U2_UEI = (1.0 + TKBL*(2.0*U2*UEI/QINFBL**2 - 1.0))
      &       / (1.0 - TKBL*(UEI/QINFBL)**2)
       U2_MS  = (U2*(UEI/QINFBL)**2  -  UEI)*TKBL_MS
@@ -336,8 +338,9 @@ C
       HK2_MS =                HK2_M2*M2_MS
 C
 C---- set momentum thickness Reynolds number
-
       RT2    = R2*U2*T2/V2
+	  write(*,*) "BLKIN R2: ", R2," U2: ", U2, " T2: ",
+     & T2, " V2: ", V2, " ==> RT2: ", RT2
 
       RT2_U2 = RT2*(1.0/U2 + R2_U2/R2 - V2_U2/V2)
       RT2_T2 = RT2/T2
@@ -406,6 +409,8 @@ C
       GRC_HK = AA_HK + 0.7* BB_HK
 C
 C
+
+	  write(*,*) "DAMPL RT: ", RT
       GR = LOG10(RT)
       GR_RT = 1.0 / (2.3025851*RT)
 C
@@ -680,12 +685,14 @@ C
 C==========================
 C---- 2nd-order
       IF(IDAMPV.EQ.0) THEN
+	   write(*,*) "CAll to DAMPL in AXSET RT1: ", RT1
        CALL DAMPL( HK1, T1, RT1, AX1, AX1_HK1, AX1_T1, AX1_RT1 )
+	   write(*,*) "SECOND CAll to DAMPL in AXSET RT2: ", RT2
        CALL DAMPL( HK2, T2, RT2, AX2, AX2_HK2, AX2_T2, AX2_RT2 )
       ELSE
        CALL DAMPL2( HK1, T1, RT1, AX1, AX1_HK1, AX1_T1, AX1_RT1 )
        CALL DAMPL2( HK2, T2, RT2, AX2, AX2_HK2, AX2_T2, AX2_RT2 )
-      ENDIF
+      ENDIF  
 C
 CC---- simple-average version
 C      AXA = 0.5*(AX1 + AX2)
@@ -878,6 +885,8 @@ C---- interpolate BL variables to XT
       TT    = T1*WF1    + T2*WF2
       DT    = D1*WF1    + D2*WF2
       UT    = U1*WF1    + U2*WF2
+	  write(*,*) "TRCHECK2 U1: ", U1, " WF1: ", WF1, " U2: ",
+     & U2, " WF2: ", WF2, " ==> UT: ", UT
 C
       XT_A2 = X1*WF1_A2 + X2*WF2_A2
       TT_A2 = T1*WF1_A2 + T2*WF2_A2
@@ -889,6 +898,7 @@ C---- temporarily set "2" variables from "T" for BLKIN
       T2 = TT
       D2 = DT
       U2 = UT
+	  write(*,*) "TRCHECK2 UT: ", UT, " ==> U2: ", U2
 C
 C---- calculate laminar secondary "T" variables HKT, RTT
       CALL BLKIN
@@ -921,7 +931,7 @@ C---- calculate amplification rate AX over current X1-XT interval
      &         AX_HKT, AX_TT, AX_RTT, AX_AT )
 C
 C---- punch out early if there is no amplification here
-      IF(AX .LE. 0.0) GO TO 101
+      IF(AX .LE. 0.0) GO TO 101	  
 C
 C---- set sensitivity of AX(A2)
       AX_A2 = (AX_HKT*HKT_TT + AX_TT + AX_RTT*RTT_TT)*TT_A2
@@ -1087,7 +1097,7 @@ C
 C
 C---- set sensitivities of residual RES
 CCC   RES  = AMPL2 - AMPL1 - AX*(X2-X1)
-      Z_AX =               -    (X2-X1)
+      Z_AX =               -    (X2-X1) 
 C
       Z_A1 = Z_AX*AX_A1 - 1.0
       Z_T1 = Z_AX*AX_T1
@@ -2804,7 +2814,7 @@ C
 C
 C-------- check for transition and set appropriate flags and things
           IF((.NOT.SIMI) .AND. (.NOT.TURB)) THEN
-           CALL TRCHEK
+           CALL TRCHEK	   
 C          DP mod: check for infinite loop condition
            IF (XFOIL_FAIL) RETURN
            AMI = AMPL2
@@ -3500,12 +3510,13 @@ C      DP mod: added SILENT_MODE option
        IF (.NOT. SILENT_MODE) THEN
          WRITE(*,*)
          WRITE(*,*) 'Initializing BL ...'
-       ENDIF
-       CALL MRCHUE
+       ENDIF   
+       CALL MRCHUE   
 C      DP mod: check for infinite loop condition
        IF (XFOIL_FAIL) RETURN
        LBLINI = .TRUE.
       ENDIF
+	  
 C
       IF (.NOT. SILENT_MODE) WRITE(*,*)
 C
@@ -3520,7 +3531,7 @@ C
     6   CONTINUE
     5 CONTINUE
 C
-      CALL UESET
+      CALL UESET	  
 C
       DO 7 IS=1, 2
         DO 8 IBL=2, NBL(IS)
