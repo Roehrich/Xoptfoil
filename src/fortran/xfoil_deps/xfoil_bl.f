@@ -927,7 +927,7 @@ C---- calculate amplification rate AX over current X1-XT interval
      &         AX_HKT, AX_TT, AX_RTT, AX_AT )
 C
 C---- punch out early if there is no amplification here
-      IF(AX .LE. 0.0) GO TO 101	  
+      IF(AX .LE. 0.0) GO TO 101
 C
 C---- set sensitivity of AX(A2)
       AX_A2 = (AX_HKT*HKT_TT + AX_TT + AX_RTT*RTT_TT)*TT_A2
@@ -2810,7 +2810,7 @@ C
 C
 C-------- check for transition and set appropriate flags and things
           IF((.NOT.SIMI) .AND. (.NOT.TURB)) THEN
-           CALL TRCHEK	   
+           CALL TRCHEK
 C          DP mod: check for infinite loop condition
            IF (XFOIL_FAIL) RETURN
            AMI = AMPL2
@@ -3527,7 +3527,7 @@ C
     6   CONTINUE
     5 CONTINUE
 C
-      CALL UESET	  
+      CALL UESET
 C
       DO 7 IS=1, 2
         DO 8 IBL=2, NBL(IS)
