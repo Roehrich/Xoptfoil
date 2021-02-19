@@ -1,0 +1,4 @@
+title="Airfoil polars"
+variables="alpha" "cl" "cd" "cm" "xtrt" "xtrb" "flapangle" "cpmin" "xacct" "xaccb" "sept" "sepb" "E"
+zone t="Seed airfoil polar"
+   7.80  1.0000  2.577692E-02 -3.490088E-02 0.0721 1.0000   0.00  -4.6817 0.0003 0.5911     F     F  38.79
