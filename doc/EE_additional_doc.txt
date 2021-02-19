@@ -46,7 +46,7 @@ Example:
 ...
 /
 
--The boundary layer parameters are NOT altered!!!
+-The boundary layer parameters are altered!!!
 
 SCCON     =  3.0	= Klag (default 5.6)	shear coefficient lag constant
 DUXCON    =  0.5	= Uxwt (default 1.0)
@@ -68,6 +68,8 @@ CTRCEX    =  		= CtiniX
 -number of operation points increased to 100
 
 -the formating of outputs has been changed and the glide ratio, separation flag, cpmin and acceleration lenghts have been added to the results
+
+-more decimals for airfoil output
 
 
 The following source code has been modified compared to the original code (Version V1.60):
