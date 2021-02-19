@@ -493,9 +493,9 @@ subroutine calculate_polar (foil, polar, xfoil_geom_options, xfoil_options)
     y_flap_spec, flap_degrees, xfoil_options,                                    &
     polar%op_points%converged, polar%op_points%lift, polar%op_points%drag,       &
     polar%op_points%moment, polar%op_points%cpmin, polar%op_points%xacct,        &
-    polar%op_points%xaccb, polar%op_points%sept, polar%op_points%sepb,         &
-    polar%op_points%alpha, polar%op_points%xtrt, polar%op_points%xtrb,         &
-    xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt)
+    polar%op_points%xaccb, polar%op_points%sept, polar%op_points%sepb,           &
+    xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt,                                  &
+    polar%op_points%alpha, polar%op_points%xtrt, polar%op_points%xtrb)
 
 end subroutine calculate_polar
 

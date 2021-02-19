@@ -1486,12 +1486,9 @@ C     DP mod: added SILENT_MODE option
         WRITE(*,*) 'Solving BL system ...'
       END IF
       DO 1000 ITER=1, NITER
-	    write(*    ,'(A, I3, I3)') " Looking in XFOIL", ITER, NITER
 C
 C------ fill Newton system for BL variables
-        write(*    ,'(A)') " Still here in aero..."
         CALL SETBL
-		write(*    ,'(A)') " Not anymore in aero..."
 C       DP mod: check for infinite loop condition
         IF (XFOIL_FAIL) THEN
           CL = -0.1

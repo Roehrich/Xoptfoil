@@ -210,9 +210,9 @@ subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
                      re, ma, use_flap, x_flap, y_flap,                         &
                      y_flap_spec, flap_degrees, xfoil_options,                 &
                      op_converged, lift, drag, moment, cpmin, xacct,           &
-                     xaccb, sept, sepb, alpha, xtrt, xtrb, ncrit_per_point,  &
-                     xtript_per_point, xtripb_per_point, &
-                     xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt)
+                     xaccb, sept, sepb, xsepta_pt, xseptb_pt, xsepba_pt,       &
+                     xsepbb_pt,alpha, xtrt, xtrb, ncrit_per_point,             &
+                     xtript_per_point, xtripb_per_point)
       
 
   use xfoil_inc
@@ -233,9 +233,9 @@ subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
       lift, drag, moment, cpmin, xacct, xaccb, alpha, xtrt, xtrb
   logical, dimension(size(operating_points,1)), intent(out) :: sept, sepb   
   logical, dimension(:), intent(out) :: op_converged
+  double precision, dimension(:), intent(in) ::xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt
   double precision, dimension(:), intent(in), optional :: ncrit_per_point, &
-        xtript_per_point, xtripb_per_point, &
-        xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt
+        xtript_per_point, xtripb_per_point
 
   integer :: i, noppoint
   integer :: iretry, nretry
@@ -373,9 +373,8 @@ subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
     call run_xfoil_op_point (op_modes(i), operating_points(i), xfoil_options%viscous_mode, &
                              xfoil_options%maxit, show_details, & 
                              op_converged(i), lift(i), drag(i), moment(i), cpmin(i),      &
-                             xacct(i), xaccb(i), sept(i), sepb(i), alpha(i),              &
-                             xtrt(i), xtrb(i), xsepta_pt(i), xseptb_pt(i),        &
-                             xsepba_pt(i), xsepbb_pt(i))        
+                             xacct(i), xaccb(i), sept(i), sepb(i), xsepta_pt(i), xseptb_pt(i), &
+                             xsepba_pt(i), xsepbb_pt(i), alpha(i), xtrt(i), xtrb(i))        
 
 
 !   Handling of unconverged points
@@ -409,8 +408,8 @@ subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
                                xfoil_options%maxit, show_details , & 
                                op_converged(i), lift(i), drag(i), moment(i),      &
                                cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i),  &
-                               alpha(i), xtrt(i), xtrb(i), xsepta_pt(i), &
-                               xseptb_pt(i), xsepba_pt(i), xsepbb_pt(i))
+                               xsepta_pt(i), xseptb_pt(i), xsepba_pt(i), &
+                               xsepbb_pt(i), alpha(i), xtrt(i), xtrb(i))
 
 !     Now try to run again at the old operating point increasing RE a little ...
 
@@ -425,9 +424,9 @@ subroutine run_xfoil(foil, geom_options, operating_points, op_modes,           &
         call run_xfoil_op_point (op_modes(i), operating_points(i), xfoil_options%viscous_mode, &
                                  xfoil_options%maxit, show_details, & 
                                  op_converged(i), lift(i), drag(i), moment(i),    &
-                                 cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), alpha(i),   &
-                                 xtrt(i), xtrb(i), xsepta_pt(i), xseptb_pt(i), &
-                                 xsepba_pt(i), xsepbb_pt(i))
+                                 cpmin(i), xacct(i), xaccb(i), sept(i), sepb(i), xsepta_pt(i), &
+                                 xseptb_pt(i), xsepba_pt(i), xsepbb_pt(i), alpha(i),   &
+                                 xtrt(i), xtrb(i))
                               
         if (.not. op_converged(i)    & 
             .or. (is_out_lier (drag_statistics(i), drag(i)))  &
@@ -502,8 +501,8 @@ end subroutine run_xfoil
 subroutine run_xfoil_op_point (op_mode, op_point, viscous_mode,       &
                                maxit, show_details,                   &
                                converged, lift, drag, moment, cpmin, &
-                               xacct, xaccb, sept, sepb, alpha, xtrt, xtrb, &
-                               xsepta_pt, xseptb_pt, xsepba_pt, xsepbb_pt)
+                               xacct, xaccb, sept, sepb, xsepta_pt, xseptb_pt, &
+                               xsepba_pt, xsepbb_pt, alpha, xtrt, xtrb)
                     
 
   use xfoil_inc
@@ -549,9 +548,7 @@ subroutine run_xfoil_op_point (op_mode, op_point, viscous_mode,       &
   converged = .true. 
   
   if (viscous_mode) then 
-    write(*    ,'(A)') " Looking good here"
     call VISCAL(maxit, niter_needed)
-    write(*    ,'(A)') " Looking not good here"
     ! coverged? 
 
     if (niter_needed > maxit) then 

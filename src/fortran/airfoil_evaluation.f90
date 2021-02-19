@@ -529,8 +529,8 @@ function aero_objective_function(foil, actual_flap_degrees)
                  use_flap, x_flap, y_flap, y_flap_spec,                        &
                  actual_flap_degrees(1:noppoint), xfoil_options,               &
                  op_converged, lift, drag, moment, cpmin, xacct, xaccb,   &
-                 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
-                 xsepta, xseptb, xsepba, xsepbb)
+                 sept, sepb, xsepta, xseptb, xsepba, xsepbb, alpha, xtrt, xtrb, &
+                 ncrit_pt, xtript_pt, xtripb_pt)
 
   xfoil_options%show_details = show_details  
 
@@ -985,8 +985,8 @@ function write_airfoil_optimization_progress(designvars, designcounter)
                  use_flap, x_flap, y_flap, y_flap_spec,                        &
                  actual_flap_degrees(1:noppoint), xfoil_options,               &
                  op_converged, lift, drag, moment, cpmin, xacct, xaccb,   &
-                 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
-                 xsepta, xseptb, xsepba, xsepbb)
+                 sept, sepb, xsepta, xseptb, xsepba, xsepbb, alpha, xtrt, xtrb, &
+                 ncrit_pt, xtript_pt, xtripb_pt)
 
 
 xfoil_options%reinitialize = xfoil_reinitialize 

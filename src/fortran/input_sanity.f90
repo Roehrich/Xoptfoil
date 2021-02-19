@@ -354,8 +354,8 @@ subroutine check_seed()
                  use_flap, x_flap, y_flap, y_flap_spec,                        &
                  flap_degrees(1:noppoint), xfoil_options,                      &
                  op_converged, lift, drag, moment, cpmin, xacct, xaccb,        &
-                 sept, sepb, alpha, xtrt, xtrb, ncrit_pt, xtript_pt, xtripb_pt, &
-                 xsepta, xseptb, xsepba, xsepbb)
+                 sept, sepb, xsepta, xseptb, xsepba, xsepbb, alpha, xtrt, xtrb, &
+                 ncrit_pt, xtript_pt, xtripb_pt)
 
   xfoil_options%show_details = show_details
   xfoil_options%reinitialize = xfoil_reinitialize 
