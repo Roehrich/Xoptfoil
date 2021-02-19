@@ -98,10 +98,10 @@ add_library(MYOBJLIB OBJECT ${SOURCESDBLE} ${SOURCESREAL})
 
 # Build executables
 add_executable("xoptfoil-JX-EE" $<TARGET_OBJECTS:MYOBJLIB> "src/fortran/main.f90")
-add_executable("xfoil_worker" $<TARGET_OBJECTS:MYOBJLIB> "src/fortran/xfoil_worker.f90")
+add_executable("xfoil_worker-EE" $<TARGET_OBJECTS:MYOBJLIB> "src/fortran/xfoil_worker.f90")
 
 # Installation
-install(TARGETS xoptfoil-JX-EE xfoil_worker DESTINATION bin)
+install(TARGETS xoptfoil-JX-EE xfoil_worker-EE DESTINATION bin)
 install(FILES src/python/xoptfoil_visualizer-jx.py
         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
                     GROUP_READ             GROUP_EXECUTE
